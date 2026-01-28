@@ -13,32 +13,49 @@
 
 #### Клонируй репозиторий
 
-git clone <https://github.com/infinity74853/skillswap-email-service>
+```
+git clone https://github.com/infinity74853/skillswap-email-service
+```
+
+```
 cd skillswap-email-service
+```
 
 #### Настрой окружение
 
+```
 cp .env.example .env
-отредактируй .env при необходимости
+отредактируй .env # при необходимости
+```
 
 #### Установи зависимости
 
+```
 npm install
+```
 
 #### Запусти в режиме разработки
 
+```
 npm run start:dev
+```
+
 
 ### Вариант 2: Docker
 
 #### Собери и запусти
 
+```
 docker-compose up -d
+```
 
 #### Или собери вручную
 
+```
 docker build -t skillswap-email .
+
 docker run -p 3005:3005 --env-file .env skillswap-email
+```
 
 #### 📖 API Документация
 
