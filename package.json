@@ -21,8 +21,10 @@
     "docker:build": "docker build -t skillswap-email .",
     "docker:run": "docker run -p 3005:3005 --env-file .env skillswap-email",
     "docker:push": "docker tag skillswap-email your-dockerhub/skillswap-email:latest && docker push your-dockerhub/skillswap-email:latest",
-    "compose:up": "docker-compose up",
+    "compose:up:dev": "docker-compose up email-service-dev",
+    "compose:up": "docker-compose up email-service",
     "compose:down": "docker-compose down",
+    "compose:logs": "docker-compose logs -f",
     "compose:up:prod": "docker-compose -f docker-compose.prod.yml up -d",
     "mail:test": "curl -X POST http://localhost:3005/mail/send -H \"Content-Type: application/json\" -d '{\"to\":\"test@example.com\",\"subject\":\"Test\",\"text\":\"Hello from email service\"}'"
   },

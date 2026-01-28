@@ -2,19 +2,47 @@ version: '3.8'
 
 services:
   email-service:
-    build: .
-    container_name: skillswap-email
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: skillswap-email-service
     ports:
       - "${PORT:-3005}:3005"
     environment:
       - NODE_ENV=${NODE_ENV:-development}
-      - PORT=${PORT:-3005}
-      - SMTP_HOST=${SMTP_HOST}
-      - SMTP_PORT=${SMTP_PORT}
+      - PORT=3005
+      - SMTP_HOST=${SMTP_HOST:-smtp.gmail.com}
+      - SMTP_PORT=${SMTP_PORT:-587}
       - SMTP_USER=${SMTP_USER}
       - SMTP_PASSWORD=${SMTP_PASSWORD}
     restart: unless-stopped
-    # Для разработки можно добавить volumes
-    # volumes:
-    #   - ./src:/app/src
-    #   - ./package.json:/app/package.json
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3005/ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - skillswap-network
+
+  # Для разработки с hot reload (опционально)
+  email-service-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: skillswap-email-service-dev
+    ports:
+      - "${PORT:-3006}:3005"
+    environment:
+      - NODE_ENV=development
+      - PORT=3005
+    volumes:
+      - ./src:/app/src
+      - ./package.json:/app/package.json
+    command: npm run start:dev
+    networks:
+      - skillswap-network
+
+networks:
+  skillswap-network:
+    driver: bridge

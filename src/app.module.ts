@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MailModule } from './mail/mail.module';
+import { HealthController } from './health/health.controller';
 
 @Module({
   imports: [
@@ -13,5 +14,6 @@ import { MailModule } from './mail/mail.module';
     // Наш модуль для отправки email
     MailModule,
   ],
+  controllers: [HealthController],
 })
 export class AppModule {}

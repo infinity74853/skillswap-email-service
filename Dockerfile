@@ -1,12 +1,12 @@
 # Build stage
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Копируем package.json и package-lock.json
+# Копируем файлы зависимостей
 COPY package*.json ./
 
-# Устанавливаем зависимости
+# Устанавливаем ВСЕ зависимости (включая dev)
 RUN npm ci
 
 # Копируем исходный код
@@ -16,7 +16,7 @@ COPY . .
 RUN npm run build
 
 # Production stage
-FROM node:18-alpine
+FROM node:20-alpine
 
 WORKDIR /app
 
@@ -28,6 +28,15 @@ RUN npm ci --only=production
 
 # Копируем собранное приложение из builder stage
 COPY --from=builder /app/dist ./dist
+
+# Копируем нужные файлы
+COPY .env.example .env.example
+COPY README.md ./
+
+# Создаем не-root пользователя для безопасности
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001
+USER nodejs
 
 # Открываем порт
 EXPOSE 3005
